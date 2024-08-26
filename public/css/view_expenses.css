@@ -25,9 +25,9 @@ a:hover {
 #navigation {
     margin: auto;
     width:fit-content;
-    background-image: url('/images/financial-graph-02.png');
-    background-repeat: repeat-x;
-    background-position: bottom;
+    background-color: aquamarine;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
 
 }
 

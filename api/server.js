@@ -204,6 +204,44 @@ app.get('/api/username_details', async (req, res) => {
     }
 });
 
+// Handling the delete_user route
+app.delete('/api/user/delete_account', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Unknown user' });
+    }
+
+    const userId = req.session.user.id;
+
+    try {
+        // Start a transaction
+        await my_database.beginTransaction();
+
+        // Delete expenses linked to the user
+        await my_database.query(`DELETE FROM expenses WHERE user_id = ?`, [userId]);
+
+        // Delete the user
+        await my_database.query(`DELETE FROM users WHERE id = ?`, [userId]);
+
+        // Commit the transaction
+        await my_database.commit();
+
+        // Destroy the session after deleting the user
+        req.session.destroy(err => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to delete session' });
+            }
+            res.status(200).json({ message: 'Account and associated expenses deleted successfully' });
+        });
+
+    } catch (error) {
+        // Rollback the transaction in case of an error
+        await my_database.rollback();
+        console.error('Error during account deletion:', error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 // Handling adding expenses
 app.post('/api/expenses/add_expenses', async (req, res) => {
     if (!req.session.user) {

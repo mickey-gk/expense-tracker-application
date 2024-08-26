@@ -42,4 +42,33 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error fetching username:', error);
         document.getElementById('this_caption').textContent = 'Error loading username';
     });
+
+   // Route to delete account
+    const delete_account = document.getElementById('delete_account');
+    delete_account.addEventListener('click', async () => {
+        const confirm_del = confirm('Are you sure you want to delete your account!');
+        if(confirm_del) {
+            try {
+                const response = await fetch('/api/user/delete_account', {
+                    method: 'DELETE'
+                });
+    
+                if (response.ok) {
+                    // Account deletion was successful
+                    alert('Account deleted successfully.');
+                    // Redirect to the homepage or another page
+                    window.location.href = '/';
+                } else {
+                    // Handle server errors
+                    const errorMessage = await response.text();
+                    alert(`Error: ${errorMessage}`);
+                }
+            } catch (error) {
+                // Handle network errors
+                alert(`Network Error: ${error.message}`);
+            }
+        }
+
+    });
+
 });
