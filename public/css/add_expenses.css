@@ -1,0 +1,108 @@
+:root {
+    background-color: aliceblue;
+    background-image: url('/images/financial-graph-02.png');
+    background-repeat: repeat-x;
+    background-position: bottom;
+
+
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    font-size: 1.4rem;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+#navigation {
+    margin: auto;
+    width:fit-content;
+}
+
+#navigation > ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+#navigation > ul > li {
+    margin: 0 1.5rem;
+} 
+
+
+#available_categories {
+    width: 80vw;
+    height: 4rem;
+    background-color: aquamarine;
+    margin: auto;
+    margin-top: 1rem;
+}
+
+#available_categories > p:first-child {
+    text-align: center;
+}
+
+#available_categories > ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#add_expenses_form {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 86vh;
+    margin: auto;
+    background-color: beige;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding: 1rem .4rem;
+}
+
+#add_expenses_form > h4 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+input {
+    font-size: 1.2rem;
+    background-color: whitesmoke;
+    margin-bottom: 1rem;
+    border-radius: .4rem;
+    padding: .2rem;
+    background-color: blanchedalmond;
+
+}
+
+input[type="submit"] {
+    width: fit-content;
+    text-align: center;
+    position: relative;
+    left: 70%;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+input[type="submit"]:hover {
+    cursor: pointer;
+}
+
+label {
+    font-size: 1.6rem;}

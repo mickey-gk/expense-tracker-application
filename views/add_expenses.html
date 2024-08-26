@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expenses</title>
+    <link rel="stylesheet" href="/css/add_expenses.css">
+    <script src="/js/add_expenses.js" defer></script>
+</head>
+<body>
+    <nav id="navigation">
+        <ul>
+            <li><button id="to_dashboard">Dashboard</button></li>
+            <li><button id="to_update">Update Expenses</button></li>
+            <li><button id="to_delete">Delete Expenses</button></li>
+            <li><button id="to_view">View Expenses</button></li>
+        </ul>
+    </nav>
+
+    <section id="available_categories">
+        <p>DISPLAYING ADDED CATEGORIES:</p>
+        <ul id="category_list_display"></ul>
+    </section>
+
+    <form id="add_expenses_form">
+        <h4>Add Expenses</h4>
+
+        <label for="category">Category</label>
+        <input
+            type="text" 
+            id="category" 
+            name="expense_category" 
+            placeholder="Input category..."
+            required />
+
+        <label for="expense_name">Expense Name</label>
+        <input
+            type="text"  
+            id="expense_name"
+            name="expense_name" 
+            placeholder="Add expense name..."
+            required />
+
+        <label for="expense_amount">Expense Amount</label>
+        <input
+            type="number"
+            id="expense_amount"
+            name="expense_amount" 
+            placeholder="Expense amount, should be digits..."
+            required />
+
+        <label for="expense_date">Date</label>
+        <input
+            type="date"
+            id="expense_date"
+            name="expense_date"
+            required />
+        
+        <label for="expense_description">Description</label>
+        <input
+            type="text"
+            id="expense_description"
+            name="expense_description"
+            placeholder="Expense description..."
+            />
+
+        <input type="submit" value="Add Expense">
+    </form>    
+</body>
+</html>

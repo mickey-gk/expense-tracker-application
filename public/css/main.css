@@ -1,0 +1,77 @@
+/* this CSS file will stylw the register.html
+and login.html files */
+
+/* styling both files */
+:root {
+    background-color: aliceblue;
+    background-image: url('/images/financial-graph-01.png');
+    background-repeat: repeat-x;
+    background-position: bottom;
+
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;   
+    box-sizing: border-box; 
+}
+
+#flex-div {
+    display: flex;
+    flex-direction: row;
+    
+}
+
+#text-section {
+    width: 60vw;
+    height: 80vh;
+}
+#form-name {
+    padding-left: .4rem;
+}
+#form-section {
+    background-color: antiquewhite;
+    width: fit-content;
+    height: fit-content;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 30vw;
+    height: fit-content;
+    background-color: darkkhaki;
+    border: .1rem solid red;
+    border-radius: .2rem;
+    padding: .4rem;
+}
+
+form > input {
+    padding-bottom: 10px;
+}
+
+form > input[type="submit"] {
+    font-size: 1.2rem;
+    width: fit-content;
+    align-self: flex-end;
+    margin-top: .8rem;
+    padding: .2rem;
+}
+
+#last-p {
+    padding-left: .4rem;
+}
+
+
+
+/* styling one file register.html */
+form > #register-html {
+    padding-top: .8rem;
+}
+
+
+/* styling one file, login.html */
+form > #login-html {
+    padding-top:  .8rem;
+}

@@ -1,0 +1,154 @@
+:root {
+    background-color: aliceblue;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    font-size: 1.4rem;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+/* components styling */
+header {
+    display: flex;
+    flex-direction: row;
+
+}
+
+header > h2 {
+    margin-right: 2rem;
+    padding-left: .4rem;
+}
+
+#rule_one {
+    height: .2rem;
+    background-color: aqua;
+}
+
+header > nav {
+    position: relative;
+    right: .4rem;
+    width: inherit;
+    height: fit-content;
+    background-color: azure;
+    border-radius: .4rem;
+
+}
+
+header > nav > ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+}
+
+header > nav > ul > li {
+    margin: 0 1.2rem;
+}
+
+#user-section {
+    width: 10rem;
+    min-height: 80vh;
+    /* max-width: fit-content; */
+    background-color: white;
+    padding-top: 1.2rem;
+    border-radius: .4rem;
+    border: .1rem solid blue;
+    margin-left: .2rem;
+}
+
+#user-icon {
+    width: 8rem;
+    height: 8rem;
+    background-color: aquamarine;
+    margin: auto;
+    border-radius: 50%;
+}
+
+#user-icon > img {
+    width: 100%;
+    height: 100%;
+}
+
+#user-section > #this_caption {
+    text-align: center;
+    color: blue;
+    font-weight: bold;
+}
+
+/* styling the user nav menu */
+#user-nav-menu > ul > li > a {
+    font-size: 1rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular',
+     'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: .4rem 0;
+}
+
+#user-section > #user-expense-nav > ul > li > a  {
+    font-size: .8rem;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular',
+     'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: .8rem 0;
+}
+
+#user-section > nav {
+    margin-left: -1rem;
+}
+
+/* this is for chart section */
+#main-section {
+    display: flex;
+    flex-direction: row;
+}
+
+#chart-section {
+    height: 15rem;
+    min-width: 84vw;
+    /* max-width: 84vw; */
+    padding:0.2rem;
+    background-color: white;
+    margin-left: .8rem;
+    margin-right:1rem;
+    border: .05rem solid black;
+    border-radius: .4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+#chart-section > div:first-child {
+    width: 70%;
+    height: 100%;
+}
+#chart-section > div:last-child {
+    width: 30%;
+    height: 100%;
+}
+
+/* canvas styling */
+#bar_chart,  #pie_chart {
+    height: 100%;
+    width: 100%;
+    background-color: aliceblue;
+    margin-right: .4rem;
+}

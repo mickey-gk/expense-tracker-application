@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBOARD</title>
+    <!-- Link to custom CSS file -->
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <!-- Link to FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Load external Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Load custom JavaScript files as modules -->
+    <script src="/js/charts.js" type="module" defer></script>
+    <script src="/js/dashboard.js" type="module" defer></script>
+</head>
+<body>
+    <header>
+        <h2>DASHBOARD</h2>
+        <!-- Navigation menu for expense-related actions -->
+        <nav id="expense-nav">
+            <ul>
+                <li><a href="/add_expenses"><i class="fa fa-plus-circle"> ADD EXPENSES</i></a></li>
+                <li><a href="/delete_expenses"><i class="fa fa-trash"> DELETE EXPENSES</i></a></li>
+                <li><a href="/update_expenses"><i class="fa fa-edit"> UPDATE EXPENSES</i></a></li>
+                <li><a href="/view_expenses"><i class="fa fa-eye"> VIEW EXPENSES</i></a></li>
+            </ul>
+        </nav>
+    </header>
+    <hr id="rule_one" />
+    <main id="main-section">
+        <section id="user-section">
+            <div id="user-icon" class="user-icon">
+                <!-- User icon image -->
+                <img src="/images/financial-graph-02.png" alt="User Icon" />
+            </div>
+            <!-- Placeholder for user name -->
+            <p id="this_caption"><i class="fa fa-spinner fa-spin"></i> USER NAME</p>
+
+            <!-- Navigation menu for user actions -->
+            <nav id="user-nav-menu">
+                <ul>
+                    <li><a id="log_out_button" href="#"><i class="fa fa-sign-out"> LOG OUT</i></a></li>
+                    <li><a href="#"><i class="fa fa-user"> MY ACCOUNT</i></a></li>
+                </ul>
+            </nav>
+            <hr />
+
+            <!-- Repeated expense navigation with a unique ID -->
+            <nav id="user-expense-nav">
+                <ul>
+                    <li><a href="/add_expenses">ADD EXPENSE</a></li>
+                    <li><a href="/delete_expenses">DELETE EXPENSES</a></li>
+                    <li><a href="/update_expenses">UPDATE EXPENSES</a></li>
+                    <li><a href="/view_expenses">VIEW EXPENSES</a></li>
+                </ul>
+            </nav>
+        </section>
+        
+        <!-- Section for displaying charts -->
+        <section id="chart-section">
+            <div class="bar_chart_div">
+                <canvas id="bar_chart"></canvas>
+            </div>
+            <div class="pie_chart_div">
+                <canvas id="pie_chart"></canvas>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

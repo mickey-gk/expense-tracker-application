@@ -1,0 +1,43 @@
+:root {
+    background-color: aliceblue;
+    background-image: url('/images/financial-graph-02.png');
+    background-repeat: repeat-x;
+    background-position: bottom;
+
+
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+    font-size: 1.4rem;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+#navigation {
+    margin: auto;
+    width:fit-content;
+}
+
+#navigation > ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+#navigation > ul > li {
+    margin: 0 1.5rem;
+} 
