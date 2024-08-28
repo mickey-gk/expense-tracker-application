@@ -95,10 +95,6 @@ app.get('/manage_expenses', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', '/manage_expenses.html'));
 });
 
-app.get('/update_expenses', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', '/update_expenses.html'));
-});
-
 app.get('/view_expenses', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', '/view_expenses.html'));
 });
