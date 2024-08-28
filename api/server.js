@@ -38,25 +38,21 @@ let my_database;
         });
         console.log('Connected to database');
 
-        // Create a database for the expenses
+        // Create and use the database
         await my_database.query(`CREATE DATABASE IF NOT EXISTS expense_tracker_database`);
-
-        // Use the database
         await my_database.query(`USE expense_tracker_database`);
 
-        // Query to add user table in the database
-        const usersTableQuery = `
+        // Create users and expenses tables
+        await my_database.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 email VARCHAR(40) UNIQUE NOT NULL,
                 username VARCHAR(40) NOT NULL,
                 password VARCHAR(255) NOT NULL
             )
-        `;
-        await my_database.query(usersTableQuery);
+        `);
 
-        // Query to create expenses table
-        const expensesTableQuery = `
+        await my_database.query(`
             CREATE TABLE IF NOT EXISTS expenses (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 user_id INT,
@@ -67,8 +63,7 @@ let my_database;
                 description VARCHAR(255),
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
-        `;
-        await my_database.query(expensesTableQuery);
+        `);
 
     } catch (error) {
         console.error(`Database connection error: ${error.message}`);
@@ -96,8 +91,8 @@ app.get('/add_expenses', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', '/add_expenses.html'));
 });
 
-app.get('/delete_expenses', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', '/delete_expenses.html'));
+app.get('/manage_expenses', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views', '/manage_expenses.html'));
 });
 
 app.get('/update_expenses', (req, res) => {
@@ -117,6 +112,11 @@ const my_users = {
     getUserByEmail: async (email) => {
         const [rows] = await my_database.query(`SELECT * FROM ${my_users.table_name} WHERE email = ?`, [email]);
         return rows[0];
+    },
+    delete_user: async (user_id) => {
+        // Delete the user and all associated expenses
+        await my_database.query(`DELETE FROM expenses WHERE user_id = ?`, [user_id]);
+        return my_database.query(`DELETE FROM ${my_users.table_name} WHERE id = ?`, [user_id]);
     }
 };
 
@@ -182,67 +182,50 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-//api to handle username retrieval
+// API to handle username retrieval
 app.get('/api/username_details', async (req, res) => {
     if (!req.session.user) {
-        return res.status(401).json({ error: 'User unknown' });
+        return res.status(401).json({ error: 'Unauthorized access' });
     }
 
-    const userId = req.session.user.id;
+    const user_id = req.session.user.id;
 
     try {
-        const [rows] = await my_database.query('SELECT username FROM users WHERE id = ?', [userId]);
-
-        if (rows.length > 0) {
-            res.status(200).json({ username: rows[0].username });
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
+        const [rows] = await my_database.query('SELECT username FROM users WHERE id = ?', [user_id]);
+        res.status(200).json({ username: rows[0].username });
     } catch (error) {
-        console.error('Error retrieving username:', error.message);
+        console.error('Error fetching username:', error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Handling the delete_user route
-app.delete('/api/user/delete_account', async (req, res) => {
+// API to handle expenses retrieval and summary by category
+app.get('/api/expenses/sum-by-category', async (req, res) => {
     if (!req.session.user) {
-        return res.status(401).json({ error: 'Unknown user' });
+        return res.status(401).json({ error: 'Unauthorized access' });
     }
 
-    const userId = req.session.user.id;
+    const user_id = req.session.user.id;
 
     try {
-        // Start a transaction
-        await my_database.beginTransaction();
+        const [rows] = await my_database.query(`
+            SELECT category, SUM(amount) AS total_amount
+            FROM expenses
+            WHERE user_id = ?
+            GROUP BY category
+        `, [user_id]);
 
-        // Delete expenses linked to the user
-        await my_database.query(`DELETE FROM expenses WHERE user_id = ?`, [userId]);
+        const categories = rows.map(row => row.category);
+        const amounts = rows.map(row => row.total_amount);
 
-        // Delete the user
-        await my_database.query(`DELETE FROM users WHERE id = ?`, [userId]);
-
-        // Commit the transaction
-        await my_database.commit();
-
-        // Destroy the session after deleting the user
-        req.session.destroy(err => {
-            if (err) {
-                return res.status(500).json({ error: 'Failed to delete session' });
-            }
-            res.status(200).json({ message: 'Account and associated expenses deleted successfully' });
-        });
-
+        res.status(200).json({ categories, amounts });
     } catch (error) {
-        // Rollback the transaction in case of an error
-        await my_database.rollback();
-        console.error('Error during account deletion:', error.message);
+        console.error('Error fetching expense summary:', error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-
-// Handling adding expenses
+// Handling the add_expenses route
 app.post('/api/expenses/add_expenses', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'Unauthorized access' });
@@ -263,23 +246,50 @@ app.post('/api/expenses/add_expenses', async (req, res) => {
     }
 });
 
-// handling expenses categories
-app.get('/api/expenses/expense_categories', async(req, res) => {
-    if(!req.session.user) {
-        return res.status(401).json({error: 'access to database error!'});
+// API route to fetch all expenses for the delete page
+app.get('/api/expenses/expense_categories', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Unauthorized access' });
     }
 
     const userId = req.session.user.id;
 
-        try {
-            const[rows] = await my_database.query(`SELECT * FROM expenses WHERE user_id = ?`, [userId]);
-            res.status(200).json(rows);
-        } catch (error) {
-            res.status(500).json({error: 'Internal server error'});
-        }
+    try {
+        // Retrieve all expenses associated with the user
+        const [rows] = await my_database.query(
+            'SELECT id, category, name, amount, date, description FROM expenses WHERE user_id = ?',
+            [userId]
+        );
+
+        // Send the retrieved expenses as a JSON response
+        return res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error fetching expenses for deletion:', error.message);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
-// Handling retrieving expenses
+// Route to delete a specific expense by ID
+app.delete('/api/expenses/delete_expenses/:id', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Unauthorized access' });
+    }
+
+    const userId = req.session.user.id;
+    const expenseId = req.params.id;
+
+    try {
+        const delete_expense = `DELETE FROM expenses WHERE id = ? AND user_id = ?`;
+        await my_database.query(delete_expense, [expenseId, userId]);
+
+        return res.status(200).json({ message: 'Expense deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting expense:', error.message);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+// API route to view all expenses for the logged-in user
 app.get('/api/expenses/view_expenses', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'Unauthorized access' });
@@ -288,51 +298,62 @@ app.get('/api/expenses/view_expenses', async (req, res) => {
     const userId = req.session.user.id;
 
     try {
-        const [rows] = await my_database.query(`SELECT * FROM expenses WHERE user_id = ?`, [userId]);
-        res.status(200).json(rows);
+        // Retrieve all expenses associated with the user
+        const [rows] = await my_database.query('SELECT * FROM expenses WHERE user_id = ?', [userId]);
+
+        // Send the retrieved expenses as a JSON response
+        return res.status(200).json(rows);
     } catch (error) {
         console.error('Error fetching expenses:', error.message);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Endpoint to get expenses grouped by category
-app.get('/api/expenses/sum-by-category', async (req, res) => {
+// API route to update an expense
+app.put('/api/expenses/update_expenses/:id', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'Unauthorized access' });
     }
 
     const userId = req.session.user.id;
+    const expenseId = req.params.id;
+    const { category, name, amount, date, description } = req.body;
 
     try {
-        const [rows] = await my_database.query(`
-            SELECT category, SUM(amount) as total
-            FROM expenses
-            WHERE user_id = ?
-            GROUP BY category
-        `, [userId]);
+        const update_expense = `
+            UPDATE expenses 
+            SET category = ?, name = ?, amount = ?, date = ?, description = ?
+            WHERE id = ? AND user_id = ?
+        `;
+        await my_database.query(update_expense, [category, name, amount, date, description, expenseId, userId]);
 
-        const categories = [];
-        const amounts = [];
-
-        rows.forEach(row => {
-            categories.push(row.category);
-            amounts.push(parseFloat(row.total));
-        });
-
-        res.json({ categories, amounts });
+        return res.status(200).json({ message: 'Expense updated successfully' });
     } catch (error) {
-        console.error('Error fetching expenses:', error.message);
+        console.error('Error updating expense:', error.message);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+// API to handle the account deletion
+app.delete('/api/user/delete_account', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Unauthorized access' });
+    }
+
+    const user_id = req.session.user.id;
+
+    try {
+        await my_users.delete_user(user_id);
+        req.session.destroy(); // End the session
+        res.status(200).json({ message: 'Account deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting account:', error.message);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Create a PORT
+// Port setting and server initiation
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, (error) => {
-    if (error) {
-        console.log("Error starting server!");
-    } else {
-        console.log(`Server running on port: ${PORT}`);
-    }
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
 });

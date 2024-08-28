@@ -2,8 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get element buttons and form
     const go_to_dashboard = document.getElementById('to_dashboard');
     const go_to_add = document.getElementById('to_add');
-    const go_to_update = document.getElementById('to_update');
-    const go_to_delete = document.getElementById('to_delete');
+    const go_to_manage = document.getElementById('to_manage');
 
     // Create redirection to the pages
     go_to_dashboard.addEventListener('click', () => {
@@ -14,12 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/add_expenses';
     });
 
-    go_to_update.addEventListener('click', () => {
-        window.location.href = '/update_expenses';
-    });
-
-    go_to_delete.addEventListener('click', () => {
-        window.location.href = '/delete_expenses';
+    go_to_manage.addEventListener('click', () => {
+        window.location.href = '/manage_expenses';
     });
 
     // Fetch and display expenses
